@@ -1,63 +1,20 @@
 #!/usr/bin/env bash
 
-pgbackup_dump() {
-    echo "make dump"
+__SRC__="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/src"
 
-    printf "%s\n" "$@"
+###>include
+source "${__SRC__}/pg.bash" || {
+    echo "[!] Failed to source pg.bash." >&2
 
-    pg_dump "$@"
+
+    exit 1
 }
 
-pgbackup_restore() {
-    echo "restore dump"
+source "${__SRC__}/pg/con.bash" || {
+    echo "[!] Failed to source pg/con.bash." >&2
 
-    printf "%s\n" "$@"
-
-#    pg_restore "$@"
+    exit 1
 }
+###<include
 
-pgbackup_run() {
-    :
-}
-
-pgbackup() {
-    declare command
-
-    command="${1:?missing argument: command}"
-
-    case $command in
-        dump|restore)
-            ;;
-        *)
-            echo "pgbackup: \"${command}\" is not a pgbackup command." >&2
-
-            exit 1
-    esac
-
-    PGHOST="${PGHOSTADDR:-${PGHOST:-localhost}}"
-    PGPORT="${PGPORT:-5432}"
-    PGUSER="${PGUSER:-${POSTGRES_USER:-postgres}}"
-
-    export PGHOST PGPORT PGUSER
-
-
-    PGDATABASE="${PGDATABASE:-}" && {
-        [[ -n ${PGDATABASE} ]] && export PGDATABASE
-    }
-
-
-
-    PGPASSWORD="${PGPASSWORD:-}" && {
-        [[ -n ${PGPASSWORD} ]] && export PGPASSWORD
-    }
-
-
-    echo "${PGHOST}"
-
-
-
-    exit
-    "pgbackup_${command}" "${@:1}"
-}
-
-pgbackup "$@"
+pg_backup "$@"
