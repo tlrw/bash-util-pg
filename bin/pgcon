@@ -5,16 +5,17 @@
 __SRC__="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/src"
 
 source "${__SRC__}/pg.bash" || {
-    echo "[!] Failed to source pg.bash." >&2
+    echo "[!] Failed to source pg.bash" >&2
 
     exit 1
 }
 
-source "${__SRC__}/pg/con.bashd" || {
+source "${__SRC__}/pg/con.bash" || {
     echo "[!] Failed to source pg/con.bash" >&2
 
     exit 1
 }
+
 ###<embedded
 
 
