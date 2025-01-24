@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 
+###>embedded
+
 __SRC__="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/src"
 
-###>include
 source "${__SRC__}/pg.bash" || {
-    echo "[!] Failed to source pg.bash." >&2
+    echo "[!] Failed to source pg.bash" >&2
 
+    exit 1
+}
+
+source "${__SRC__}/pg/backup.bash" || {
+    echo "[!] Failed to source pg/backup.bash" >&2
 
     exit 1
 }
 
-source "${__SRC__}/pg/con.bash" || {
-    echo "[!] Failed to source pg/con.bash." >&2
+###<embedded
 
-    exit 1
-}
-###<include
 
 pg_backup "$@"
