@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+__DIR__="$(dirname "${BASH_SOURCE[0]}")"
+
+source "$(dirname "${__DIR__}")/src/pg.bash" || {
+    echo "[!] Loading of pg.bash library failed." >&2
+
+    exit 1
+}
+
+pg_con() {
+    :
+}

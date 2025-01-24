@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+pgbackup_dump() {
+    echo "make dump"
+
+    printf "%s\n" "$@"
+
+    pg_dump "$@"
+}
+
+pgbackup_restore() {
+    echo "restore dump"
+
+    printf "%s\n" "$@"
+
+#    pg_restore "$@"
+}
+
+pgbackup_run() {
+    :
+}
+
+pgbackup() {
+    declare command
+
+    command="${1:?missing argument: command}"
+
+    case $command in
+        dump|restore)
+            ;;
+        *)
+            echo "pgbackup: \"${command}\" is not a pgbackup command." >&2
+
+            exit 1
+    esac
+
+    PGHOST="${PGHOSTADDR:-${PGHOST:-localhost}}"
+    PGPORT="${PGPORT:-5432}"
+    PGUSER="${PGUSER:-${POSTGRES_USER:-postgres}}"
+
+    export PGHOST PGPORT PGUSER
+
+
+    PGDATABASE="${PGDATABASE:-}" && {
+        [[ -n ${PGDATABASE} ]] && export PGDATABASE
+    }
+
+
+
+    PGPASSWORD="${PGPASSWORD:-}" && {
+        [[ -n ${PGPASSWORD} ]] && export PGPASSWORD
+    }
+
+
+    echo "${PGHOST}"
+
+
+
+    exit
+    "pgbackup_${command}" "${@:1}"
+}
+
+pgbackup "$@"
