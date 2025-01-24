@@ -1,21 +1,26 @@
 #!/usr/bin/env bash
 
-__DIR__="$(dirname "${BASH_SOURCE[0]}")"
+###>embedded
 
-source "$(dirname "${__DIR__}")/src/pg.bash" || {
-    echo "[!] Loading of pg.bash library failed." >&2
+__SRC__="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/src"
+
+source "${__SRC__}/pg.bash" || {
+    echo "[!] Failed to source pg.bash." >&2
 
     exit 1
 }
 
-#
+source "${__SRC__}/pg/con.bashd" || {
+    echo "[!] Failed to source pg/con.bash" >&2
+
+    exit 1
+}
+###<embedded
+
 
 PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
     [[ -n ${PGDATABASE} ]] && export PGDATABASE
 }
 
-main() {
-    psql "$@"
-}
 
-main "$@"
+pg_con "$@"
