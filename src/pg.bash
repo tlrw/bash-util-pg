@@ -6,3 +6,13 @@ if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
     exit 1
 fi
 
+
+PGHOST="${PGHOSTADDR:-${PGHOST:-127.0.0.1}}"
+PGPORT="${PGPORT:-5432}"
+PGUSER="${PGUSER:-${POSTGRES_USER:-postgres}}"
+
+export PGHOST PGPORT PGUSER
+
+PGPASSWORD="${PGPASSWORD:-${POSTGRES_PASSWORD:-}}" && {
+    [[ -n ${PGPASSWORD} ]] && export PGPASSWORD
+}
