@@ -8,6 +8,14 @@ source "$(dirname "${__DIR__}")/src/pg.bash" || {
     exit 1
 }
 
-pg_con() {
-    :
+#
+
+PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
+    [[ -n ${PGDATABASE} ]] && export PGDATABASE
 }
+
+main() {
+    psql "$@"
+}
+
+main "$@"
