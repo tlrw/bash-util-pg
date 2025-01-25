@@ -17,3 +17,8 @@ export PGHOST PGPORT PGUSER
 PGPASSWORD="${PGPASSWORD:-${POSTGRES_PASSWORD:-}}" && {
     [[ -n ${PGPASSWORD} ]] && export PGPASSWORD
 }
+
+
+pg_psql() {
+
+}

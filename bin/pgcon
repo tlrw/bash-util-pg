@@ -4,6 +4,14 @@
 
 __SRC__="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/src"
 
+source "${__SRC__}/lib/tlrw/bash-lib/src/inc.bash" "debug" "error" || {
+    echo "[!] Failed to source lib/tlrw/bash-lib/src/cmd.bash" >&2
+
+    exit 1
+}
+
+inc "${__SRC__}/pg/con.bash"
+
 source "${__SRC__}/pg.bash" || {
     echo "[!] Failed to source pg.bash" >&2
 
@@ -24,4 +32,10 @@ PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
 }
 
 
-pg_con "$@"
+main() {
+    util_require_cmd "psql"
+
+    pg_con "$@"
+}
+
+main "$@"
