@@ -6,10 +6,12 @@ if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
     exit 1
 fi
 
-__SRC__="$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")/src"
 
-source "${__SRC__}/pgbackup.bash" || {
-    echo "[!] Failed to load pgbackup.bash" >&2
+__DIR__="$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")"
 
+source "${__DIR__}/lib/tlrw/bash/src/std.bash" "mod" || {
     exit 1
 }
+
+
+inc_module "${__DIR__}/src/pgbackup"
