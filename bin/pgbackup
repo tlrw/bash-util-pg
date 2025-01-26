@@ -1,22 +1,15 @@
 #!/usr/bin/env bash
 
-###>embedded
+if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
+    echo "pgbackup: requires Bash in version 4 or higher, current version: ${BASH_VERSION}"
 
-__SRC__="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/src"
+    exit 1
+fi
 
-source "${__SRC__}/pg.bash" || {
-    echo "[!] Failed to source pg.bash" >&2
+__SRC__="$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")/src"
+
+source "${__SRC__}/pgbackup.bash" || {
+    echo "[!] Failed to load pgbackup.bash" >&2
 
     exit 1
 }
-
-source "${__SRC__}/pg/backup.bash" || {
-    echo "[!] Failed to source pg/backup.bash" >&2
-
-    exit 1
-}
-
-###<embedded
-
-
-pg_backup "$@"
