@@ -1,41 +1,16 @@
 #!/usr/bin/env bash
 
-###>embedded
+if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
+    echo "pgbackup: requires Bash in version 4 or higher, current version: ${BASH_VERSION}"
 
-__SRC__="$(dirname "$(dirname "${BASH_SOURCE[0]}")")/src"
+    exit 1
+fi
 
-source "${__SRC__}/lib/tlrw/bash-lib/src/inc.bash" "debug" "error" || {
-    echo "[!] Failed to source lib/tlrw/bash-lib/src/cmd.bash" >&2
 
+__DIR__="$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")"
+
+source "${__DIR__}/lib/tlrw/bash/src/std.bash" "mod" "util" || {
     exit 1
 }
 
-inc "${__SRC__}/pg/con.bash"
-
-source "${__SRC__}/pg.bash" || {
-    echo "[!] Failed to source pg.bash" >&2
-
-    exit 1
-}
-
-source "${__SRC__}/pg/con.bash" || {
-    echo "[!] Failed to source pg/con.bash" >&2
-
-    exit 1
-}
-
-###<embedded
-
-
-PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
-    [[ -n ${PGDATABASE} ]] && export PGDATABASE
-}
-
-
-main() {
-    util_require_cmd "psql"
-
-    pg_con "$@"
-}
-
-main "$@"
+inc_module "${__DIR__}/src/pgcon"
