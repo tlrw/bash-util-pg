@@ -9,9 +9,8 @@ fi
 
 __DIR__="$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")"
 
-source "${__DIR__}/lib/tlrw/bash/src/std.bash" "mod" || {
+source "${__DIR__}/lib/tlrw/bash/src/std.bash" "mod" "util" || {
     exit 1
 }
-
 
 inc_module "${__DIR__}/src/pgbackup"
