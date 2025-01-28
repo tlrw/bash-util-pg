@@ -7,10 +7,18 @@ if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
 fi
 
 
-__DIR__="$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")"
+__DIR__="$(dirname -- "${BASH_SOURCE[0]}")"
 
-source "${__DIR__}/lib/tlrw/bash/src/std.bash" "util" || {
+__LIB="$(dirname -- "${__DIR__}")/lib"
+__SRC="$(dirname -- "${__DIR__}")/src"
+
+source "${__LIB}/tlrw/bash/src/std.bash" "util" || {
     exit 1
 }
 
-inc_module "${__DIR__}/src/pgcon"
+inc_module \
+    "${__SRC}/pg/envs" \
+    "${__SRC}/pgcon"
+
+
+util "pgcon" "$@"
