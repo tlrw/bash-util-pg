@@ -12,7 +12,7 @@ __DIR__="$(dirname -- "${BASH_SOURCE[0]}")"
 LIB_DIR="$(dirname -- "${__DIR__}")/lib"
 SRC_DIR="$(dirname -- "${__DIR__}")/src"
 
-source "${LIB_DIR}/tlrw/bash/src/std.bash" "util" || {
+source "${LIB_DIR}/tlrw/bash/src/std.bash" "cmd" || {
     exit 1
 }
 
@@ -20,4 +20,4 @@ inc_module \
     "${SRC_DIR}/pg"
 
 
-util "pg" "$@"
+cmd "pg" "Facilitate work with PostgreSQL" "0.1.x" "$@"
