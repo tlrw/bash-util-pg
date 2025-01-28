@@ -20,4 +20,4 @@ inc_module \
     "${SRC_DIR}/pg"
 
 
-cmd "pg" "Facilitate work with PostgreSQL" "0.1.x" "$@"
+cmd_run "pg" "Facilitate work with PostgreSQL" "0.1.x" "$@"
