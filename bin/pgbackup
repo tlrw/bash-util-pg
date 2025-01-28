@@ -9,7 +9,7 @@ fi
 
 __DIR__="$(dirname -- "$(dirname -- "${BASH_SOURCE[0]}")")"
 
-source "${__DIR__}/lib/tlrw/bash/src/std.bash" "mod" "util" || {
+source "${__DIR__}/lib/tlrw/bash/src/std.bash" "util" || {
     exit 1
 }
 
