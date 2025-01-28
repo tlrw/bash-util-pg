@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
+    echo "pgbackup: requires Bash in version 4 or higher, current version: ${BASH_VERSION}"
+
+    exit 1
+fi
+
+
+__DIR__="$(dirname -- "${BASH_SOURCE[0]}")"
+
+LIB_DIR="$(dirname -- "${__DIR__}")/lib"
+SRC_DIR="$(dirname -- "${__DIR__}")/src"
+
+source "${LIB_DIR}/tlrw/bash/src/std.bash" "util" || {
+    exit 1
+}
+
+inc_module \
+    "${SRC_DIR}/pg"
+
+
+util "pg" "$@"
