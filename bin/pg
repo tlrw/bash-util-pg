@@ -6,18 +6,15 @@ if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
     exit 1
 fi
 
-
 __DIR__="$(dirname -- "${BASH_SOURCE[0]}")"
 
-LIB_DIR="$(dirname -- "${__DIR__}")/lib"
-SRC_DIR="$(dirname -- "${__DIR__}")/src"
+LIB="$(dirname -- "${__DIR__}")/lib"
+SRC="$(dirname -- "${__DIR__}")/src"
 
-source "${LIB_DIR}/tlrw/bash/src/std.bash" "cmd" || {
-    exit 1
+source "${LIB}/tlrw/bash/src/std.bash" "cmd" && {
+    inc_module "${SRC}/pg"
+} || {
+    exit 112
 }
-
-inc_module \
-    "${SRC_DIR}/pg"
-
 
 cmd_run "pg" "Facilitate work with PostgreSQL" "0.1.x" "$@"
