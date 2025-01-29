@@ -2,3 +2,4 @@ check-sourced=true
 enable=avoid-nullary-conditions,check-extra-masked-returns,check-set-e-suppressed,check-unassigned-uppercase,quote-safe-variables,require-double-brackets,require-variable-braces
 source-path=src
 external-sources=true
+disable=SC2015
