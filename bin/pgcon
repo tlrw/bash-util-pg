@@ -1,24 +1,15 @@
 #!/usr/bin/env bash
 
-if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
-    echo "pgbackup: requires Bash in version 4 or higher, current version: ${BASH_VERSION}"
-
-    exit 1
-fi
-
-
 __DIR__="$(dirname -- "${BASH_SOURCE[0]}")"
 
-__LIB="$(dirname -- "${__DIR__}")/lib"
-__SRC="$(dirname -- "${__DIR__}")/src"
+SRC="$(dirname -- "${__DIR__}")/src"
 
-source "${__LIB}/tlrw/bash/src/std.bash" "util" || {
+source "${SRC}/pg/envs.bash" || {
     exit 1
 }
 
-inc_module \
-    "${__SRC}/pg/envs" \
-    "${__SRC}/pgcon"
+PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
+    [[ -n ${PGDATABASE} ]] && export PGDATABASE
+}
 
-
-util "pgcon" "$@"
+psql "$@"
