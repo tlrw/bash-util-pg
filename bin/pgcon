@@ -12,4 +12,8 @@ PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
     [[ -n ${PGDATABASE} ]] && export PGDATABASE
 }
 
-psql "$@"
+main() {
+    psql "$@"
+}
+
+main "$@"
