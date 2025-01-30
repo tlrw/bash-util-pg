@@ -69,7 +69,7 @@ main() {
     fi
 
     if [[ -z "${file}" ]]; then
-        file="${POSTGRES_PGBACKUPS_DIR:-${PWD}}/$(date +"%Y/%m/%e-${dbName}-%s.pgdump")"
+        file="${POSTGRES_PGBACKUPS_DIR:-${PWD}}/$(date +"%Y/%m/%e-${dbName}-%H%M-%S.pgdump")"
 
         case "${options['format']}" in
             p|plain)
