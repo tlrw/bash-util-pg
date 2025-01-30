@@ -14,4 +14,4 @@ PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
     [[ -n ${PGDATABASE} ]] && export PGDATABASE
 }
 
-POSTGRES_PGBACKUPS_DIR="${POSTGRES_PGBACKUPS_DIR:-/var/backups/postgresql}"
+PG_BACKUPS_DIR="${POSTGRES_PGBACKUPS_DIR:-/var/backups/postgresql}"
