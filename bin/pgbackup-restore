@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+__DIR__="$(dirname -- "${BASH_SOURCE[0]}")"
+
+SRC="$(dirname -- "${__DIR__}")/src"
+
+source "${SRC}/pg/envs.bash" || {
+    exit 1
+}
+
+main() {
+    echo "pgbackup-restore"
+}
+
+main "$@"
