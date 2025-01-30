@@ -77,7 +77,7 @@ main() {
     declare -a cmdOptions=()
 
     if [[ -z "${file}" ]]; then
-        file="${PG_BACKUPS_DIR:-${PWD}}/$(date +"%Y/%m/%e-${dbName}-%H%M-%S.pgdump")"
+        file="${PG_BACKUPS_DIR:-${PWD}}/$(date +"%Y/%m/${dbName}-%e-%H%M-%S.pgdump")"
 
         case "${options['format']}" in
             p | plain)
