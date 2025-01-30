@@ -10,8 +10,10 @@ PGPASSWORD="${PGPASSWORD:-${POSTGRES_PASSWORD:-}}" && {
     [[ -n ${PGPASSWORD} ]] && export PGPASSWORD
 }
 
-PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
-    [[ -n ${PGDATABASE} ]] && export PGDATABASE
+pg_args_input_parse() {
+    :
 }
 
-POSTGRES_PGBACKUPS_DIR="${POSTGRES_PGBACKUPS_DIR:-/var/backups/postgresql}"
+pg_main() {
+    echo "PG MAIN"
+}
