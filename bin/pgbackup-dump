@@ -2,6 +2,12 @@
 
 __DIR__="$(dirname -- "${BASH_SOURCE[0]}")"
 
+if ! command -v pg_dump >/dev/null; then
+    echo "no pg_dump" >&2
+
+    exit 1
+fi
+
 SRC="$(dirname -- "${__DIR__}")/src"
 
 source "${SRC}/pg/envs.bash" || {
@@ -9,9 +15,9 @@ source "${SRC}/pg/envs.bash" || {
 }
 
 main() {
-    declare dbName="${PGDATABASE:-}" file=""
     declare -A options
     declare -i quoteAllIdentifiers=1
+    declare    dbName="${PGDATABASE:-}" file=""
 
     options["format"]="directory"
 
@@ -26,28 +32,28 @@ main() {
                 quoteAllIdentifiers=0
                 shift
                 ;;
-            -Fp|--format=plain)
+            -Fp | --format=plain)
                 options["format"]="plain"
                 shift
                 ;;
-            -Fc|--format=custom)
+            -Fc | --format=custom)
                 options["format"]="custom"
                 shift
                 ;;
-            -Fd|--format=directory)
+            -Fd | --format=directory)
                 options["format"]="directory"
                 shift
                 ;;
-            -Ft|--format=tar)
+            -Ft | --format=tar)
                 options["format"]="tar"
                 shift
                 ;;
-            -F|--format)
+            -F | --format)
                 ! [[ "$2" =~ ^(plain|p|custom|c|directory|d|tar|t)$ ]] && echo "invalid format: $2" >&2 && exit 1
                 options["format"]="$2"
                 shift
                 ;;
-            -f|--file)
+            -f | --file)
                 [[ -z "$2" ]] && echo "option --file requires argument: path" >&2 && exit 1
                 file="$2"
                 shift 2
@@ -58,33 +64,34 @@ main() {
         esac
     done
 
+    if [[ -z "${dbName}" ]]; then
+        echo "no database name" >&2
+
+        exit 1
+    fi
+
     if [[ ${quoteAllIdentifiers} -eq 1 ]]; then
         options["quote-all-identifiers"]=""
     fi
 
-    if [[ -z "${dbName}" ]]; then
-        echo "no database name"
-
-        exit 1
-    fi
+    declare -a cmdOptions=()
 
     if [[ -z "${file}" ]]; then
         file="${POSTGRES_PGBACKUPS_DIR:-${PWD}}/$(date +"%Y/%m/%e-${dbName}-%H%M-%S.pgdump")"
 
         case "${options['format']}" in
-            p|plain)
+            p | plain)
                 file+=".sql"
                 ;;
-            t|tar)
+            t | tar)
                 file+=".tar"
                 ;;
         esac
     fi
 
-    declare -a cmdOptions=()
-    declare optName optValue
-
     cmdOptions+=("--file" "${file}")
+
+    declare optName optValue
 
     for optName in "${!options[@]}"; do
         optValue="${options[${optName}]}"
@@ -96,8 +103,12 @@ main() {
         fi
     done
 
-    if [[ "${options[format]}" =~ ^(d|directory)$ ]]; then
-        mkdir -p "$(dirname "${file}")"
+    declare outputDir
+
+    outputDir="$(dirname "${file}")"
+
+    if ! [[ -d "${outputDir}" ]]; then
+        mkdir -p "${outputDir}"
     fi
 
     pg_dump "${cmdOptions[@]}" "${dbName}"
