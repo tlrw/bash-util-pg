@@ -1,20 +1,47 @@
 #!/usr/bin/env bash
 
-if [[ "${BASH_VERSINFO[0]:-0}" -lt 4 ]]; then
-    echo "pgbackup: requires Bash in version 4 or higher, current version: ${BASH_VERSION}"
+PGHOST="${PGHOSTADDR:-${PGHOST:-127.0.0.1}}"
+PGPORT="${PGPORT:-5432}"
+PGUSER="${PGUSER:-${POSTGRES_USER:-postgres}}"
 
-    exit 1
-fi
+export PGHOST PGPORT PGUSER
 
-__DIR__="$(dirname -- "${BASH_SOURCE[0]}")"
-
-LIB="$(dirname -- "${__DIR__}")/lib"
-SRC="$(dirname -- "${__DIR__}")/src"
-
-source "${LIB}/tlrw/bash/src/std.bash" "cmd" && {
-    inc_module "${SRC}/pg"
-} || {
-    exit 112
+PGPASSWORD="${PGPASSWORD:-${POSTGRES_PASSWORD:-}}" && {
+    [[ -n ${PGPASSWORD} ]] && export PGPASSWORD
 }
 
-cmd_run "pg" "Facilitate work with PostgreSQL" "0.1.x" "$@"
+PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
+    [[ -n ${PGDATABASE} ]] && export PGDATABASE
+}
+
+PG_BACKUPS_DIR="${POSTGRES_PGBACKUPS_DIR:-/var/backups/postgresql}"
+
+pg_backup_dump_main() {
+    echo "pg_backup_dump_main"
+}
+
+pg_backup_restore_main() {
+    echo "pg_backup_restore_main"
+}
+
+pg_backup_main() {
+    :
+}
+
+pg_con_main() {
+    echo "pg_con_main"
+}
+
+pg_show_help() {
+    echo "no help entry"
+}
+
+pg_main() {
+    if [[ $# -eq 0 ]]; then
+        pg_show_help
+
+        exit 1
+    fi
+}
+
+pg_main "$@"
