@@ -29,7 +29,7 @@ pg_backup_main() {
 }
 
 pg_con_main() {
-    echo "pg_con_main"
+    exec psql "$@"
 }
 
 pg_show_help() {
