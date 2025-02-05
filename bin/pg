@@ -18,10 +18,14 @@ PG_BACKUPS_DIR="${POSTGRES_PGBACKUPS_DIR:-/var/backups/postgresql}"
 
 pg_backup_dump_main() {
     echo "pg_backup_dump_main"
+
+    exit
 }
 
 pg_backup_restore_main() {
     echo "pg_backup_restore_main"
+
+    exit
 }
 
 pg_backup_show_help() {
@@ -35,7 +39,23 @@ pg_backup_main() {
         exit 1
     fi
 
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            dump)
+                shift
+                pg_backup_dump_main "$@"
+                ;;
+            restore)
+                shift
+                pg_backup_restore_main "$@"
+                ;;
+            *)
+                echo "${BASH_SOURCE[0]}: invalid command" >&2
 
+                exit 1
+                ;;
+        esac
+    done
 }
 
 pg_con_main() {
