@@ -124,9 +124,35 @@ pg_backup_dump_main() {
 }
 
 pg_backup_restore_main() {
-    echo "pg_backup_restore_main"
+    declare dbName="${PGDATABASE:-}" arg
 
-    exit
+    for arg in "$@"; do
+        if [[ "${arg}" =~ ^(-d|--dbname)$ ]]; then
+            dbName=""
+
+            break
+        fi
+    done
+
+    if [[ -n "${dbName}" ]]; then
+        declare confirmation
+
+        echo -n "Database was not specified, do you want restore into ${dbName^^} database ? [y/N]: "
+        read -r -n1 confirmation
+        echo ""
+
+        if ! [[ "${confirmation}" =~ ^[yY]$ ]]; then
+            echo "Exiting..."
+
+            exit 0
+        fi
+
+        echo "Proceeding..."
+
+        set -- --dbname "${dbName}" "$@"
+    fi
+
+    exec pg_restore "$@"
 }
 
 pg_backup_show_help() {
