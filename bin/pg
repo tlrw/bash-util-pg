@@ -42,6 +42,24 @@ pg_main() {
 
         exit 1
     fi
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            backup)
+                shift
+                pg_backup_main "$@"
+                ;;
+            con)
+                shift
+                pg_con_main "$@"
+                ;;
+            *)
+                echo "${BASH_SOURCE[0]}: invalid command" >&2
+
+                exit 1
+                ;;
+        esac
+    done
 }
 
 pg_main "$@"
