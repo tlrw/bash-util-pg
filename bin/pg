@@ -24,8 +24,18 @@ pg_backup_restore_main() {
     echo "pg_backup_restore_main"
 }
 
+pg_backup_show_help() {
+    echo "no help entry"
+}
+
 pg_backup_main() {
-    :
+    if [[ $# -eq 0 ]]; then
+        pg_backup_show_help
+
+        exit 1
+    fi
+
+
 }
 
 pg_con_main() {
