@@ -1,3 +1,0 @@
-[submodule "lib/tlrw/bash"]
-	path = lib/tlrw/bash
-	url = git@github.com:tlrw/bash-lib.git
