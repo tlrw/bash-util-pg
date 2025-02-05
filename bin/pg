@@ -17,9 +17,110 @@ PGDATABASE="${PGDATABASE:-${POSTGRES_DB:-}}" && {
 PG_BACKUPS_DIR="${POSTGRES_PGBACKUPS_DIR:-/var/backups/postgresql}"
 
 pg_backup_dump_main() {
-    echo "pg_backup_dump_main"
+    declare -a args=() options=()
+    declare    dbName="${PGDATABASE:-}" isDefaultDb="yes" dumpFile
+    declare    format="directory" quoteAllIdentifiers="yes"
 
-    exit
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -d | --dbname)
+                [[ -z "$2" ]] && echo "${BASH_SOURCE[0]}: option -d | --dbname requires argument" >&2 && exit 1
+                dbName="$2"
+                isDefaultDb="no"
+                shift 2
+                ;;
+            --no-quote-all-identifiers)
+                quoteAllIdentifiers="no"
+                shift
+                ;;
+            -Fp | --format=plain)
+                format="plain"
+                shift
+                ;;
+            -Fc | --format=custom)
+                format="custom"
+                shift
+                ;;
+            -Fd | --format=directory)
+                format="directory"
+                shift
+                ;;
+            -Ft | --format=tar)
+                format="tar"
+                shift
+                ;;
+            -F | --format)
+                ! [[ "$2" =~ ^(plain|p|custom|c|directory|d|tar|t)$ ]] && echo "${BASH_SOURCE[0]}: invalid dump format: $2" >&2 && exit 1
+                format="$2"
+                shift 2
+                ;;
+            -f | --file)
+                [[ -z "$2" ]] && echo "${BASH_SOURCE[0]}: option -f | --file requires argument" >&2 && exit 1
+                dumpFile="$2"
+                shift 2
+                ;;
+            *)
+                args+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    if [[ -z "${dbName}" ]]; then
+        echo "${BASH_SOURCE[0]}: no database specified: set option -d | --dbname or environment variable PGDATABASE" >&2
+
+        exit 1
+    fi
+
+    if [[ "${isDefaultDb}" == "yes" ]]; then
+        declare confirmation
+
+        echo -n "Database was not specified, do you want to dump ${dbName^^} database ? [y/N]: "
+        read -r -n1 confirmation
+        echo ""
+
+        if ! [[ "${confirmation}" =~ ^[yY]$ ]]; then
+            echo "Exiting..."
+
+            exit 0
+        fi
+
+        echo "Proceeding..."
+    fi
+
+    options+=("--dbname" "${dbName}")
+    options+=("--format" "${format}")
+
+    if [[ "${quoteAllIdentifiers}" == "yes" ]]; then
+        options+=("--quote-all-identifiers")
+    fi
+
+    if [[ -z "${dumpFile}" ]]; then
+        dumpFile="${PG_BACKUPS_DIR:-${PWD}}/${dbName}/${dbName}-$(date +"%Y%m%d-%H%M%S.pgdump")"
+
+        case "${format}" in
+            p | plain)
+                dumpFile+=".sql"
+                ;;
+            t | tar)
+                dumpFile+=".tar"
+                ;;
+        esac
+    fi
+
+    options+=("--file" "${dumpFile}")
+
+    declare outputDir
+
+    outputDir="$(dirname "${dumpFile}")"
+
+    if ! mkdir -p "${outputDir}"; then
+        echo "${BASH_SOURCE[0]}: could not create backup output directory: ${outputDir}" >&2
+
+        exit 1
+    fi
+
+    exec pg_dump "${options[@]}" "${args[@]}"
 }
 
 pg_backup_restore_main() {
